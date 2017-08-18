@@ -1,4 +1,5 @@
 .ipynb_checkpoints/
 dataset/SingleElectronPt50_FEVTDEBUG_n250k_IMG_CROPS32.root
 dataset/SinglePhotonPt50_FEVTDEBUG_n250k_IMG_CROPS32.root
+dataset/
 results/
