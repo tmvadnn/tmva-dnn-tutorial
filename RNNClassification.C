@@ -36,7 +36,7 @@ void RNNClassification()
    std::cout << "--- RNNClassification  : Using input file: " << input->GetName() << std::endl;
    
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "TMVA.root" );
+   TString outfileName( "TMVA_DNN.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Creating the factory object
@@ -70,7 +70,10 @@ void RNNClassification()
    dataloader->AddBackgroundTree( background, backgroundWeight );
 
    // Input Layout
-   TString inputLayoutString("InputLayout=1|32|32");  //FIXME find out
+   TString inputLayoutString("InputLayout=1|1|4");
+
+   // Batch Layout
+   TString batchLayoutString("BatchLayout=1|256|4");
 
    // General layout.
    TString layoutString ("Layout=RNN|128|64|1|0,DENSE|64|TANH,DENSE|2|LINEAR");
@@ -95,9 +98,10 @@ void RNNClassification()
    TString rnnOptions ("!H:V:ErrorStrategy=CROSSENTROPY:VarTransform=N:"
                        "WeightInitialization=XAVIERUNIFORM");
 
-   rnnOptions.Append (":"); rnnOptions.Append (inputLayoutString);
-   rnnOptions.Append (":"); rnnOptions.Append (layoutString);
-   rnnOptions.Append (":"); rnnOptions.Append (trainingStrategyString);
+   rnnOptions.Append(":"); rnnOptions.Append(inputLayoutString);
+   rnnOptions.Append(":"); rnnOptions.Append(batchLayoutString);
+   rnnOptions.Append(":"); rnnOptions.Append(layoutString);
+   rnnOptions.Append(":"); rnnOptions.Append(trainingStrategyString);
    rnnOptions.Append(":Architecture=CPU");
 
    factory->BookMethod(dataloader, TMVA::Types::kDL, "DNN_CPU", rnnOptions);
