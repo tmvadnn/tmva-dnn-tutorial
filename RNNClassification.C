@@ -73,10 +73,10 @@ void RNNClassification()
    TString inputLayoutString("InputLayout=1|1|4");
 
    // Batch Layout
-   TString batchLayoutString("BatchLayout=1|256|4");
+   TString batchLayoutString("BatchLayout=256|1|4");
 
    // General layout.
-   TString layoutString ("Layout=RNN|128|64|1|0,DENSE|64|TANH,DENSE|2|LINEAR");
+   TString layoutString ("Layout=RNN|128|4|1|0,RESHAPE|1|1|128|FLAT,DENSE|64|TANH,DENSE|2|LINEAR");
 
    // Training strategies.
    TString training0("LearningRate=1e-1,Momentum=0.9,Repetitions=1,"
@@ -103,6 +103,10 @@ void RNNClassification()
    rnnOptions.Append(":"); rnnOptions.Append(layoutString);
    rnnOptions.Append(":"); rnnOptions.Append(trainingStrategyString);
    rnnOptions.Append(":Architecture=CPU");
+
+   TCut mycuts = ""; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+   TCut mycutb = ""; // for example: TCut mycutb = "abs(var1)<0.5";
+   dataloader->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1000:nTrain_Background=1000:SplitMode=Random:NormMode=NumEvents:!V" );
 
    factory->BookMethod(dataloader, TMVA::Types::kDL, "DNN_CPU", rnnOptions);
 
